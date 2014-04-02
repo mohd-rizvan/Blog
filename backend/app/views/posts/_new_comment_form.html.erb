@@ -1,0 +1,56 @@
+<%= form_for(@comment) do |f| %>
+  <% if @comment.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@comment.errors.count, "error") %> prohibited this comment from being saved:</h2>
+
+      <ul>
+      <% @comment.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">                           
+    <%= f.label :desc,'comment' %><br />
+    <%= f.text_field :desc %>
+    <%=f.hidden_field :post_id, :value=>@post.id %>
+  </div>
+<% end %>
+
+<button id='add_new_comment'>Comment</button>
+
+<script type="text/javascript">
+	var commentHandler = function () {
+		var myData = {
+			comment: {
+				desc: $('#comment_desc').val(),
+				post_id: $('#comment_post_id').val()
+			}
+		};
+		var hash = {
+			type: 'post',
+			url: '/comments',
+			data: myData,
+			success: function (response) {
+				myNewElement = "<li>" + response.desc + ' <a href="/comments/' + response.id + ' data-confirm="Are you sure?" data-method="delete" rel="nofollow">Destroy</a></li>';
+				$('ol').append(myNewElement);
+				$('#comment_desc').val('');
+			},
+
+			error: function (error) {
+				alert("error occurred" + error)
+			},
+			dataType: 'json'
+		};
+		$.ajax(hash);
+	};
+	$("#add_new_comment").on('click', commentHandler);
+	$("#comment_desc").on('keypress', function (event) {
+		if (event.which == 13) {
+			event.preventDefault();
+			commentHandler();
+		}
+	});
+
+</script>

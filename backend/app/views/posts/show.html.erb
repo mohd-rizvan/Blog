@@ -1,0 +1,27 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Title:</b>
+  <%= @post.title %>
+</p>
+
+<p>
+  <b>Desc:</b>
+  <%= @post.desc %>
+  <%= link_to 'Edit', edit_post_path(@post) %> |
+<%= link_to 'Back', posts_path %>
+</p>
+
+<%if(@post.comments.size>0)%>
+<h2>comments:</h2>
+<%end%>
+<ol>
+<% @post.comments.each do |comment| %>
+  <li><%= comment.desc %>
+   &nbsp;
+   &nbsp;
+    <%= link_to 'Destroy', comment, method: :delete, data: { confirm: 'Are you sure?' } %>
+ </li>
+<% end %>
+</ol>
+<%= render 'new_comment_form'%>
